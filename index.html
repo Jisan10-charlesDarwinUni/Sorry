@@ -1,13 +1,309 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Google AI Studio App</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sorry Anta Apu 💔</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+    
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at 20% 30%, #F8BBD0 0%, transparent 40%), 
+                  radial-gradient(circle at 80% 70%, #B3E5FC 0%, transparent 40%), 
+                  linear-gradient(135deg, #FCE4EC 0%, #E1F5FE 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      position: relative;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 40px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
+      padding: 60px 40px;
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+      z-index: 10;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 1.5s ease-out forwards;
+    }
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(40px, 8vw, 64px);
+      color: #D81B60;
+      margin: 0 0 16px 0;
+      font-style: italic;
+      letter-spacing: -1px;
+    }
+    p {
+      font-size: clamp(16px, 4vw, 20px);
+      color: #64B5F6;
+      margin: 0 0 40px 0;
+      font-weight: 300;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      position: relative;
+      min-height: 50px;
+    }
+    button {
+      font-family: 'Inter', sans-serif;
+      font-size: 18px;
+      font-weight: 500;
+      padding: 12px 32px;
+      border-radius: 50px;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.2s, background-color 0.2s;
+    }
+    #accept-btn {
+      background-color: #D81B60;
+      color: #fff;
+      box-shadow: 0 8px 16px rgba(216, 27, 96, 0.3);
+    }
+    #accept-btn:hover {
+      background-color: #C2185B;
+      transform: scale(1.05);
+    }
+    #deny-btn {
+      background-color: rgba(255, 255, 255, 0.4);
+      color: #D81B60;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(10px);
+      position: relative;
+    }
+    #popup {
+      display: none;
+      margin-top: 20px;
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 24px;
+      padding: 24px;
+      backdrop-filter: blur(20px);
+      animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    #popup h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      color: #D81B60;
+      margin: 0 0 8px 0;
+      font-style: italic;
+    }
+    #popup p {
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: 1px;
+      color: #475569;
+      text-transform: uppercase;
+      font-family: 'Inter', sans-serif;
+    }
+    .heart-bg {
+      position: absolute;
+      color: #F06292;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    #floating-hearts {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+      overflow: hidden;
+    }
+    .floater {
+      position: absolute;
+      bottom: -100px;
+      color: #F06292;
+      opacity: 0.6;
+      animation: floatUp linear infinite;
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.5) translateY(20px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(0.5); opacity: 0; }
+      20% { opacity: 0.8; }
+      80% { opacity: 0.8; }
+      100% { transform: translateY(-120vh) scale(1.2); opacity: 0; }
+    }
+    .hidden-player {
+      position: absolute;
+      width: 0;
+      height: 0;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .start-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,0.3);
+      backdrop-filter: blur(5px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: opacity 1s;
+    }
+    .start-overlay span {
+      background: rgba(255, 255, 255, 0.7);
+      padding: 16px 32px;
+      border-radius: 50px;
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      color: #475569;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
 
+  <div class="start-overlay" id="start-overlay">
+    <span>Tap to open...</span>
+  </div>
+
+  <div class="hidden-player" id="player-container"></div>
+  <div id="floating-hearts"></div>
+
+  <div class="container" id="main-content" style="display: none;">
+    <h1>Sorry Anta Apu 💔</h1>
+    <p>Please forgive me...</p>
+
+    <div class="buttons" id="button-group">
+      <button id="accept-btn">Accept ❤️</button>
+      <button id="deny-btn">Deny 😢</button>
+    </div>
+
+    <div id="popup">
+      <h2>Yayyy 💖</h2>
+      <p>Thank you Anta Apu!</p>
+    </div>
+  </div>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    let player;
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player-container', {
+        height: '0',
+        width: '0',
+        videoId: 'r35ev9q_bEo',
+        playerVars: {
+          'autoplay': 0,
+          'controls': 0,
+          'rel': 0,
+          'showinfo': 0,
+          'modestbranding': 1,
+          'loop': 1,
+          'playlist': 'r35ev9q_bEo'
+        }
+      });
+    }
+
+    const overlay = document.getElementById('start-overlay');
+    const mainContent = document.getElementById('main-content');
+
+    overlay.addEventListener('click', () => {
+      overlay.style.opacity = '0';
+      setTimeout(() => {
+        overlay.style.display = 'none';
+        mainContent.style.display = 'block';
+        if(player && player.playVideo) {
+          player.playVideo();
+        }
+      }, 1000);
+      createInitialHearts();
+    });
+
+    const denyBtn = document.getElementById('deny-btn');
+    const acceptBtn = document.getElementById('accept-btn');
+    const popup = document.getElementById('popup');
+    const buttonGroup = document.getElementById('button-group');
+
+    const dodgeBtn = (e) => {
+      e.preventDefault();
+      const maxX = window.innerWidth - denyBtn.offsetWidth - 40;
+      const maxY = window.innerHeight - denyBtn.offsetHeight - 40;
+      const randomX = Math.max(20, Math.floor(Math.random() * maxX));
+      const randomY = Math.max(20, Math.floor(Math.random() * maxY));
+
+      denyBtn.style.position = 'fixed';
+      denyBtn.style.left = randomX + 'px';
+      denyBtn.style.top = randomY + 'px';
+    };
+
+    denyBtn.addEventListener('mouseenter', dodgeBtn);
+    denyBtn.addEventListener('touchstart', dodgeBtn, {passive: false});
+
+    acceptBtn.addEventListener('click', () => {
+      buttonGroup.style.display = 'none';
+      popup.style.display = 'block';
+      burstHearts();
+    });
+
+    const heartContainer = document.getElementById('floating-hearts');
+
+    function createHeart(burst = false) {
+      if(!heartContainer) return;
+      const heart = document.createElement('div');
+      heart.classList.add('floater');
+      heart.innerHTML = '❤';
+      
+      const size = Math.random() * 20 + 10;
+      heart.style.fontSize = size + 'px';
+      heart.style.left = Math.random() * 100 + 'vw';
+      
+      const duration = burst ? (Math.random() * 3 + 2) : (Math.random() * 5 + 4);
+      heart.style.animationDuration = duration + 's';
+      
+      heartContainer.appendChild(heart);
+
+      setTimeout(() => {
+        heart.remove();
+      }, duration * 1000);
+    }
+
+    let normalInterval;
+    function createInitialHearts() {
+      normalInterval = setInterval(() => createHeart(false), 800);
+    }
+
+    function burstHearts() {
+      clearInterval(normalInterval);
+      for(let i=0; i<30; i++) {
+        setTimeout(() => createHeart(true), Math.random() * 1000);
+      }
+      setInterval(() => createHeart(true), 200);
+    }
+  </script>
+</body>
+</html>
